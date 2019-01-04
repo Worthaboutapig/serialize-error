@@ -1,52 +1,52 @@
-'use strict';
+'use strict'
 
 const destroyCircular = (from, seen) => {
-	const to = Array.isArray(from) ? [] : {};
+	const to = Array.isArray(from) ? [] : {}
 
-	seen.push(from);
+	seen.push(from)
 
 	// TODO: Use `Object.entries() when targeting Node.js 8
 	for (const key of Object.keys(from)) {
-		const value = from[key];
+		const value = from[key]
 
 		if (typeof value === 'function') {
-			continue;
+			continue
 		}
 
 		if (!value || typeof value !== 'object') {
-			to[key] = value;
-			continue;
+			to[key] = value
+			continue
 		}
 
 		if (!seen.includes(from[key])) {
-			to[key] = destroyCircular(from[key], seen.slice());
-			continue;
+			to[key] = destroyCircular(from[key], seen.slice())
+			continue
 		}
 
-		to[key] = '[Circular]';
+		to[key] = '[Circular]'
 	}
 
-	const commonProperties = ['name', 'message', 'stack', 'code'];
+	const commonProperties = ['name', 'message', 'stack', 'code']
 
 	for (const property of commonProperties) {
 		if (typeof from[property] === 'string') {
-			to[property] = from[property];
+			to[property] = from[property]
 		}
 	}
 
-	return to;
-};
+	return to
+}
 
-module.exports = value => {
+export default value => {
 	if (typeof value === 'object') {
-		return destroyCircular(value, []);
+		return destroyCircular(value, [])
 	}
 
 	// People sometimes throw things besides Error objects…
 	if (typeof value === 'function') {
 		// JSON.stringify discards functions. We do too, unless a function is thrown directly.
-		return `[Function: ${(value.name || 'anonymous')}]`;
+		return `[Function: ${value.name || 'anonymous'}]`
 	}
 
-	return value;
-};
+	return value
+}
