@@ -16,6 +16,7 @@
 		"test": "xo && ava"
 	},
 	"main": "index.js",
+	"module": "index.js",
 	"files": [
 		"index.js"
 	],
